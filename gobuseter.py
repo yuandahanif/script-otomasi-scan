@@ -13,7 +13,9 @@ def sanitize_target(target):
 
 class gobuster:
     target = ""
+    output_dir = "outputs"
     target_output_file = ""
+    worlsist = "SecLists/Discovery/Web-Content/directory-list-2.3-small.txt"
     
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     cwd = os.getcwd()
@@ -21,13 +23,20 @@ class gobuster:
 
     def __init__(self, target):
         self.target = target
-        self.target_output_file = f"{self.cwd}/outputs/{sanitize_target(target)}-{self.timestamp}.txt"
+        self.target_output_file = os.path.join(self.output_dir, f"{sanitize_target(target)}-{self.timestamp}.txt")
 
     def run(self):
         try:
-            command = f"""
-            gobuster dir -o {self.target_output_file} -t 50 -w {self.cwd}/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt -b 404,302 -u {self.target} --random-agent
-            """
+
+            command = [
+                        "gobuster",
+                        "dir",
+                        "-u", self.target,
+                        "--random-agent",
+                        "-t", "50",
+                        "-o", self.target_output_file,
+                        "-w", self.worlsist
+                    ]
 
             process =  subprocess.Popen(
                             command,
