@@ -4,6 +4,11 @@ import subprocess, sys, os
 import re
 import datetime
 from urllib.parse import urlparse
+import pty
+import tty
+import termios
+import sys
+import select
 
 def sanitize_target(url):
     # Remove protocol (http:// or https://)
@@ -35,12 +40,21 @@ class gobuster:
 
     def run(self):
         try:
+            # Create pseudo-terminal for proper progress bar handling
+            master_fd, slave_fd = pty.openpty()
+
+            # Store original terminal settings
+            old_settings = termios.tcgetattr(sys.stdin)
 
             # Create output directory if it doesn't exist
             if not os.path.exists(self.output_dir):
                 os.makedirs(self.output_dir)
 
-            command = [
+            try:
+                # Set raw mode for terminal
+                tty.setraw(master_fd)
+
+                command = [
                         "gobuster",
                         "dir",
                         "-u", self.target,
@@ -49,22 +63,39 @@ class gobuster:
                         "-o", self.target_output_file,
                         "-w", self.worlsist
                     ]
+                # Execute gobuster with PTY
+                process = subprocess.Popen(
+                    command,
+                    stdout=slave_fd,
+                    stderr=slave_fd,
+                    universal_newlines=True,
+                    start_new_session=True
+                )
 
-            process =  subprocess.Popen(
-                            command,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT,
-                            universal_newlines=True,
-                            bufsize=1
-                        )
-            # Read and display output in real-time
-            while True:
-                output = process.stdout.readline()
-                if output == '' and process.poll() is not None:
-                    break
-                if output:
-                    print(output.strip())
-                    # log.write(output)
+                # Read and display output while preserving progress bar
+                while True:
+                    try:
+                        r, w, e = select.select([master_fd], [], [], 0.1)
+                        
+                        if master_fd in r:
+                            output = os.read(master_fd, 1024).decode('utf-8', errors='ignore')
+                            if output:
+                                # Write to screen
+                                sys.stdout.write(output)
+                                sys.stdout.flush()
+                        
+                        # Check if process has finished
+                        if process.poll() is not None:
+                            break
+                            
+                    except (IOError, OSError):
+                        break
+
+            finally:
+                # Restore terminal settings
+                termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+                os.close(master_fd)
+                os.close(slave_fd)
 
         except Exception as e:
                     error_msg = f"Error scanning {self.target}: {str(e)}\n"
