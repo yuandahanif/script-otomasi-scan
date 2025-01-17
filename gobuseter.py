@@ -19,7 +19,7 @@ class gobuster:
 
     def __init__(self, target):
         self.target = target
-        self.target_output_file = f"./output/{sanitize_target(target)}-{self.timestamp}.txt"
+        self.target_output_file = f"./outputs/{sanitize_target(target)}-{self.timestamp}.txt"
 
     def run(self):
         try:
