@@ -13,18 +13,20 @@ def sanitize_target(target):
 
 class gobuster:
     target = ""
+    target_output_file = ""
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    target_output_file = f"./output/{sanitize_target(target)}-{timestamp}.txt"
 
 
     def __init__(self, target):
         self.target = target
+        self.target_output_file = f"./output/{sanitize_target(target)}-{self.timestamp}.txt"
 
-    command = f"""
-    gobuster dir -o {target_output_file} -t 50 -w ./SecLists/Discovery/Web-Content/directory-list-2.3-small.txt -b 404,302 -u {target} --random-agent
-    """
     def run(self):
         try:
+            command = f"""
+            gobuster dir -o {self.target_output_file} -t 50 -w ./SecLists/Discovery/Web-Content/directory-list-2.3-small.txt -b 404,302 -u {self.target} --random-agent
+            """
+
             process =  subprocess.Popen(
                             self.command,
                             stdout=subprocess.PIPE,
