@@ -27,10 +27,10 @@ class gobuster:
     cwd = os.getcwd()
 
 
-    def __init__(self, target):
+    def __init__(self, target, output_dir = ""):
         self.target = target
         target_path = sanitize_target(target)
-        self.output_dir = os.path.join("outputs", target_path)
+        self.output_dir = os.path.join("outputs", output_dir, target_path)
         self.target_output_file = os.path.join(self.output_dir, f"gobuster-{sanitize_target(target)}-{self.timestamp}.txt")
 
     def run(self):

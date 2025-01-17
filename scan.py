@@ -17,10 +17,12 @@ if __name__ == "__main__":
     # Adding optional argument
     parser.add_argument("url", help = "the URL to scan")
     parser.add_argument("-t", "--Tool", help = "Use -t to specify the tool to run eg. -t nuclei or -t gobuster")
+    parser.add_argument("-od", "--output-dir", help = "Use -od to specify the output directory")
 
     args = parser.parse_args()
     target = args.url
     tool = args.Tool
+    output_dir = args.output_dir
 
     if target == "":
         print("Usage: python scan.py <target>")
