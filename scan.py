@@ -15,7 +15,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = msg)
 
     # Adding optional argument
-    parser.add_argument("url", help = "the URL to scan", required=True)
+    parser.add_argument("url", help = "the URL to scan")
     parser.add_argument("-t", "--Tool", help = "Use -t to specify the tool to run eg. -t nuclei or -t gobuster")
 
     args = parser.parse_args()
