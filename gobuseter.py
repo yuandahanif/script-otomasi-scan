@@ -41,10 +41,6 @@ class gobuster:
                     print(output.strip())
                     # log.write(output)
 
-
-            # Get the return code
-            return_code = process.poll()
-
         except Exception as e:
                     error_msg = f"Error scanning {target}: {str(e)}\n"
                     print(error_msg)
