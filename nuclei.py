@@ -42,7 +42,6 @@ class nuclei:
             command = [
                         "nuclei",
                         "-target", self.target,
-                        "--random-agent",
                         # "-severity", "low,medium,high,critical",
                         "-o", self.target_output_file,
                     ]
