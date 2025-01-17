@@ -3,17 +3,23 @@
 import subprocess, sys, os
 import re
 import datetime
+from urllib.parse import urlparse
 
-def sanitize_target(target):
-        # Remove http:// or https:// from the target
-        target = re.sub(r'^https?://', '', target)
-        # Remove invalid filename characters for Unix systems
-        target = re.sub(r'[<>:"/\\|?*]', '', target)
-        return target
+def sanitize_target(url):
+    # Remove protocol (http:// or https://)
+    parsed = urlparse(url if '//' in url else f'http://{url}')
+    domain = parsed.netloc if parsed.netloc else parsed.path
+    
+    # Remove port number if present
+    domain = domain.split(':')[0]
+    
+    # Remove any remaining invalid filename characters
+    sanitized = re.sub(r'[<>:"/\\|?*.]', '-', domain)
+    return sanitized
 
 class gobuster:
     target = ""
-    output_dir =  os.path.join("outputs", 'dir')
+    output_dir =  ""
     target_output_file = ""
     worlsist = "SecLists/Discovery/Web-Content/directory-list-2.3-small.txt"
     
@@ -23,6 +29,8 @@ class gobuster:
 
     def __init__(self, target):
         self.target = target
+        target_path = sanitize_target(target)
+        self.output_dir = os.path.join("outputs", target_path)
         self.target_output_file = os.path.join(self.output_dir, f"gobuster-{sanitize_target(target)}-{self.timestamp}.txt")
 
     def run(self):
