@@ -28,7 +28,7 @@ class gobuster:
             """
 
             process =  subprocess.Popen(
-                            self.command,
+                            command,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT,
                             universal_newlines=True,
