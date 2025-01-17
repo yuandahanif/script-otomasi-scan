@@ -33,14 +33,14 @@ if __name__ == "__main__":
 
     if tool == "nuclei":
         # Run nuclei scan
-        n = nuclei.nuclei(target)
+        n = nuclei.nuclei(target, output_dir)
         n_p = multiprocessing.Process(target=n.run)
         n_p.start()
         n_p.join()
 
     if tool == "gobuster":
         # Run gobuster scan
-        g = gobuseter.gobuster(target)
+        g = gobuseter.gobuster(target, output_dir)
         g_p = multiprocessing.Process(target=g.run)
         g_p.start()
         g_p.join()
