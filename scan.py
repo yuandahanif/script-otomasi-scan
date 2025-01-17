@@ -3,29 +3,42 @@
 import sys
 import nuclei, gobuseter
 import multiprocessing
+import argparse
 
+    
+avaliable_tools = ["nuclei", "gobuster"]
 
-def main():
-    target = sys.argv[1]
+if __name__ == "__main__":
+    msg = "A simple tool to run nuclei and gobuster scans on a target URL"
+
+    # Initialize parser
+    parser = argparse.ArgumentParser(description = msg)
+
+    # Adding optional argument
+    parser.add_argument("url", help = "the URL to scan", required=True)
+    parser.add_argument("-t", "--Tool", help = "Use -t to specify the tool to run eg. -t nuclei or -t gobuster")
+
+    args = parser.parse_args()
+    target = args.url
+    tool = args.Tool
 
     if target == "":
         print("Usage: python scan.py <target>")
         sys.exit(1)
-    # Run nuclei scan
-    n = nuclei.nuclei(target)
+    if tool not in avaliable_tools:
+        print(f"Invalid tool specified. Avaliable tools are: {avaliable_tools}")
+        sys.exit(1)
 
-    n_p = multiprocessing.Process(target=n.run)
+    if tool == "nuclei":
+        # Run nuclei scan
+        n = nuclei.nuclei(target)
+        n_p = multiprocessing.Process(target=n.run)
+        n_p.start()
+        n_p.join()
 
-    # Run gobuster scan
-    g = gobuseter.gobuster(target)
-    g_p = multiprocessing.Process(target=g.run)
-
-    n_p.start()
-    g_p.start()
-
-    n_p.join()
-    g_p.join()
-
-
-if __name__ == "__main__":
-    main()
+    if tool == "gobuster":
+        # Run gobuster scan
+        g = gobuseter.gobuster(target)
+        g_p = multiprocessing.Process(target=g.run)
+        g_p.start()
+        g_p.join()
