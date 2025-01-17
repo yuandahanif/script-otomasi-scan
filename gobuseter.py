@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import subprocess, sys
+import subprocess, sys, os
 import re
 import datetime
 
@@ -14,17 +14,19 @@ def sanitize_target(target):
 class gobuster:
     target = ""
     target_output_file = ""
+    
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    cwd = os.getcwd()
 
 
     def __init__(self, target):
         self.target = target
-        self.target_output_file = f"./outputs/{sanitize_target(target)}-{self.timestamp}.txt"
+        self.target_output_file = f"{self.cwd}/outputs/{sanitize_target(target)}-{self.timestamp}.txt"
 
     def run(self):
         try:
             command = f"""
-            gobuster dir -o {self.target_output_file} -t 50 -w ./SecLists/Discovery/Web-Content/directory-list-2.3-small.txt -b 404,302 -u {self.target} --random-agent
+            gobuster dir -o {self.target_output_file} -t 50 -w {self.cwd}/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt -b 404,302 -u {self.target} --random-agent
             """
 
             process =  subprocess.Popen(
