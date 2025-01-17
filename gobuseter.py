@@ -13,7 +13,7 @@ def sanitize_target(target):
 
 class gobuster:
     target = ""
-    output_dir = "outputs"
+    output_dir =  os.path.join("outputs", 'dir')
     target_output_file = ""
     worlsist = "SecLists/Discovery/Web-Content/directory-list-2.3-small.txt"
     
@@ -23,10 +23,14 @@ class gobuster:
 
     def __init__(self, target):
         self.target = target
-        self.target_output_file = os.path.join(self.output_dir,'dir', f"gobuster-{sanitize_target(target)}-{self.timestamp}.txt")
+        self.target_output_file = os.path.join(self.output_dir, f"gobuster-{sanitize_target(target)}-{self.timestamp}.txt")
 
     def run(self):
         try:
+
+            # Create output directory if it doesn't exist
+            if not os.path.exists(self.output_dir):
+                os.makedirs(self.output_dir)
 
             command = [
                         "gobuster",
