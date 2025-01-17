@@ -25,3 +25,7 @@ def main():
 
     n_p.join()
     g_p.join()
+
+
+if __name__ == "__main__":
+    main()
