@@ -14,11 +14,11 @@ def main():
     # Run nuclei scan
     n = nuclei.nuclei(target)
 
-    n_p = multiprocessing.Process(target=n.run, args=(target))
+    n_p = multiprocessing.Process(target=n.run)
 
     # Run gobuster scan
     g = gobuseter.gobuster(target)
-    g_p = multiprocessing.Process(target=g.run, args=(target))
+    g_p = multiprocessing.Process(target=g.run)
 
     n_p.start()
     g_p.start()
