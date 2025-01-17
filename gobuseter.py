@@ -67,17 +67,6 @@ class gobuster:
                     # log.write(output)
 
         except Exception as e:
-                    error_msg = f"Error scanning {target}: {str(e)}\n"
+                    error_msg = f"Error scanning {self.target}: {str(e)}\n"
                     print(error_msg)
                     # log.write(error_msg)
-
-
-if __name__ == "__main__":
-    target = sys.argv[1]
-
-    if target == "":
-        print("Usage: python gobuster.py <target>")
-        sys.exit(1)
-
-    g = gobuster(target)
-    g.run()
