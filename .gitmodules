@@ -1,6 +1,6 @@
 [submodule "SecLists"]
-	path = SecLists
+	path = submodules/SecLists
 	url = https://github.com/danielmiessler/SecLists.git
 [submodule "loxs"]
-	path = loxs
+	path = submodules/loxs
 	url = https://github.com/coffinxp/loxs.git

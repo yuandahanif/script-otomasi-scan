@@ -1,21 +1,8 @@
 #!/usr/bin/python
 
-import subprocess, sys, os
-import re
+import subprocess, os
 import datetime
-from urllib.parse import urlparse
-
-def sanitize_target(url):
-    # Remove protocol (http:// or https://)
-    parsed = urlparse(url if '//' in url else f'http://{url}')
-    domain = parsed.netloc if parsed.netloc else parsed.path
-    
-    # Remove port number if present
-    domain = domain.split(':')[0]
-    
-    # Remove any remaining invalid filename characters
-    sanitized = re.sub(r'[<>:"/\\|?*.]', '-', domain)
-    return sanitized
+import utils.sanitize as sanitize
 
 class nuclei:
     target = ""
@@ -28,9 +15,9 @@ class nuclei:
 
     def __init__(self, target, output_dir = ""):
         self.target = target
-        target_path = sanitize_target(target)
+        target_path = sanitize.sanitize_target(target)
         self.output_dir = os.path.join("outputs", output_dir, target_path)
-        self.target_output_file = os.path.join(self.output_dir, f"nuclei-{sanitize_target(target)}-{self.timestamp}.txt")
+        self.target_output_file = os.path.join(self.output_dir, f"nuclei-{sanitize.sanitize_target(target)}-{self.timestamp}.txt")
 
     def run(self):
         try:

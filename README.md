@@ -17,12 +17,15 @@ python3 -m venv .venv
 
 source .venv/bin/activate
 
-pip install -r loxs/requirements.txt
+pip install -r submodules/loxs/requirements.txt
 ```
-
 
 ## [katana](https://github.com/projectdiscovery/katana)
 
 ```sh
 CGO_ENABLED=1 go install github.com/projectdiscovery/katana/cmd/katana@latest
+```
+
+```sh
+export PATH=$PATH:$(go env GOPATH)/bin
 ```

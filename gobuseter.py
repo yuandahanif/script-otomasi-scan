@@ -1,32 +1,19 @@
 #!/usr/bin/python
 
 import subprocess, sys, os
-import re
 import datetime
-from urllib.parse import urlparse
 import pty
 import tty
 import termios
 import sys
 import select
-
-def sanitize_target(url):
-    # Remove protocol (http:// or https://)
-    parsed = urlparse(url if '//' in url else f'http://{url}')
-    domain = parsed.netloc if parsed.netloc else parsed.path
-    
-    # Remove port number if present
-    domain = domain.split(':')[0]
-    
-    # Remove any remaining invalid filename characters
-    sanitized = re.sub(r'[<>:"/\\|?*.]', '-', domain)
-    return sanitized
+import utils.sanitize as sanitize
 
 class gobuster:
     target = ""
     output_dir =  ""
     target_output_file = ""
-    worlsist = "SecLists/Discovery/Web-Content/directory-list-2.3-small.txt"
+    worlsist = "submodules/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt"
     
     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     cwd = os.getcwd()
@@ -34,9 +21,9 @@ class gobuster:
 
     def __init__(self, target, output_dir = ""):
         self.target = target
-        target_path = sanitize_target(target)
+        target_path = sanitize.sanitize_target(target)
         self.output_dir = os.path.join("outputs", output_dir, target_path)
-        self.target_output_file = os.path.join(self.output_dir, f"gobuster-{sanitize_target(target)}-{self.timestamp}.txt")
+        self.target_output_file = os.path.join(self.output_dir, f"gobuster-{sanitize.sanitize_target(target)}-{self.timestamp}.txt")
 
     def run(self):
         try:
